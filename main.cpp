@@ -23,7 +23,7 @@ void emenyTurn(Ship shipsA[], Ship shipsE[]);//Enemy only attacks
 void attackShipE(Ship shipsA[], Ship shipsE[], int shipA, int shipE);//random damage, say how much damage was caused to which ship.
 void attackShipA(Ship shipsA[], Ship shipsE[], int chooseShipA, int chooseShipE);//pick which ship attacks, say how much damage it causes to which ship.
 void repairShip(Ship shipsA[], int shipA);//pick which ship to ship to repair, say how much is was repaired.
-void checkCounters(Ship shipsA[], Ship shipsE[], int countA, int countE);
+void checkCounters(Ship shipsA[], Ship shipsE[], int countA, int countE);//checks for who wins/loses
 
 int main()
 {
@@ -31,6 +31,9 @@ int main()
 	int countE = 3;
 	Ship shipsA[3] = { { 15, "Main Commander", "Ally" }, { 10, "Gun Ship", "Ally" }, { 20, "Tanker", "Ally" } };
 	Ship shipsE[3] = { { 15, "Main Commander", "Enemy" }, { 10, "Gun Ship", "Ememy" }, { 20, "Tanker", "Ememy" } };
+
+	int counterA = 3;
+	int counterE = 3;
 
 	string name;
 	string yon = "No";
@@ -42,7 +45,7 @@ int main()
 		cout << "You will take turns to make actions and who ever destroies the other's ships first, Wins!" << endl;//how game works
 		cout << "Understood? Yes / No ";
 		cin >> yon;
-		if (yon == "Yes")
+		if (yon == "Yes")//checking for understanding, will repeat til user inputs "Yes"
 		{
 			cout << "Great! Let's begin!" << endl;
 			break;
@@ -50,26 +53,22 @@ int main()
 		else if (yon != "No")
 		{
 			cout << "Invalid input." << endl;
-			yon = "No";
+			yon = "No";//resets to No
 		}
 	} while (yon == "No");
 
-	int r = 1;
+	int r = 1;//rounds
 	do {
+		cout << "=============================" << endl;
 		cout << "========== Round " << r++ << " ==========" << endl;
+		cout << "=============================" << endl;
 		printShips(shipsA, shipsE, countA, countE);
+		cout << endl;
 		emenyTurn(shipsA, shipsE);
 		yourTurn(shipsA, shipsE);
-		checkCounters(shipsA, shipsE, countA, countE);
-	} while (countE > 0 && countA > 0);
-	if (countE <= 0)
-	{
-		cout << "Great Job! You have defeated the enemy!" << endl;
-	}
-	else if (countA <= 0)
-	{
-		cout << "You lost. Game Over" << endl;
-	}
+		checkCounters(shipsA, shipsE, counterA, counterE);
+	} while (r < 50);
+	cout << "============== [DRAW] ==============";
 
 	return 0;
 }
@@ -79,18 +78,33 @@ void printShips(Ship shipsA[], Ship shipsE[], int countA, int countE)//Prints al
 	cout << "Your ships: " << endl;
 	for (int i = 0; i < countA; i++)
 	{
-		cout << i << ". " << shipsA[i].team << " ship, " << shipsA[i].shipName << " has " << shipsA[i].hitPoints << " hit points." << endl;
+		if (shipsA[i].hitPoints > 0)//checks for any destroied ships to label as [DESTROIED]
+		{
+			cout << i << ". " << shipsA[i].team << " ship, " << shipsA[i].shipName << " has " << shipsA[i].hitPoints << " hit points." << endl;
+		}
+		else
+		{
+			cout << i << ". " << shipsA[i].team << " ship, " << shipsA[i].shipName << " is [DESTROIED]" << endl;
+		}
 	}
 
 	cout << "Enemy ships: " << endl;
 	for (int i = 0; i < countE; i++)
 	{
-		cout << i << ". " << shipsE[i].team << " ship, " << shipsE[i].shipName << " has " << shipsE[i].hitPoints << " hit points." << endl;
+		if (shipsE[i].hitPoints > 0)//checks for any destroied ships to label as [DESTROIED]
+		{
+			cout << i << ". " << shipsE[i].team << " ship, " << shipsE[i].shipName << " has " << shipsE[i].hitPoints << " hit points." << endl;
+		}
+		else
+		{
+			cout << i << ". " << shipsE[i].team << " ship, " << shipsE[i].shipName << " is [DESTROIED]" << endl;
+		}
 	}
 }
 
 void yourTurn(Ship shipsA[], Ship shipsE[])//Attack or Repair
 {
+	cout << "***Your Turn***\n";
 	int chooseShipA = 3;
 		cout << "Which ship do you want to use? 0, 1, or 2." << endl;
 		do {
@@ -108,8 +122,9 @@ void yourTurn(Ship shipsA[], Ship shipsE[])//Attack or Repair
 				break;
 			default:
 				cout << "Invalid input. 0, 1, or 2" << endl;
+				chooseShipA = 3;//resets to 3
 			}
-		} while (chooseShipA >= 3 || chooseShipA <= -1);
+		} while (chooseShipA == 3);
 
 		int action = 0;
 		int chooseShipE = 3;
@@ -137,8 +152,9 @@ void yourTurn(Ship shipsA[], Ship shipsE[])//Attack or Repair
 						break;
 					default:
 						cout << "Invalid input. 0, 1, or 2" << endl;
+						chooseShipE = 3;//resets to 3
 					}
-				} while (chooseShipE >= 3 || chooseShipE <= -1);
+				} while (chooseShipE == 3);
 
 				attackShipA(shipsA, shipsE, chooseShipA, chooseShipE);
 				break;
@@ -146,8 +162,8 @@ void yourTurn(Ship shipsA[], Ship shipsE[])//Attack or Repair
 				repairShip(shipsA, chooseShipA);
 				break;
 			default:
-				cout << "Invalid input. Attack(a) or Repair(r)" << endl;
-				action = 0;
+				cout << "Invalid input. Attack(1) or Repair(2)" << endl;
+				action = 0;//resets to 0
 			}
 		} while (action == 0);
 	return;
@@ -155,9 +171,10 @@ void yourTurn(Ship shipsA[], Ship shipsE[])//Attack or Repair
 //Enemy Moves
 void emenyTurn(Ship shipsA[], Ship shipsE[])//Enemy only attacks
 {
+	cout << "***Enemy Turn***\n";
 	srand(time(nullptr));
-	int randomPickA = rand() % 2;//random Ally is attacked
-	int randomPickE = rand() % 2;//random Enemy
+	int randomPickA = rand() % 3;//random Ally is attacked
+	int randomPickE = rand() % 3;//random Enemy
 	cout << "Ally " << shipsA[randomPickA].shipName << " is being attacked by Enemy " << shipsE[randomPickE].shipName << endl;
 	attackShipE(shipsA, shipsE, randomPickA, randomPickE);
 	return;
@@ -166,9 +183,20 @@ void attackShipE(Ship shipsA[], Ship shipsE[], int shipA, int shipE)//random dam
 {
 	srand(time(nullptr));
 	int damage = rand() % 15 + 1;//can change so it may miss
-	shipsA[shipA].hitPoints -= damage;
-	cout << "Enemy " << shipsE[shipE].shipName << " did " << damage << " damage to Ally " << shipsA[shipA].shipName << endl;
-	cout << "Ally " << shipsA[shipA].shipName << " now has " << shipsA[shipA].hitPoints << " hit points!" << endl;
+	if (shipsA[shipA].hitPoints <= 0)//checks to see if selected ship is destroied
+	{
+		cout << "Ally ship is destroied!" << endl;
+	}
+	else if (shipsE[shipE].hitPoints <= 0)//checks to see if selected ship is destroied
+	{
+		cout << "Enemy ship is destroied!" << endl;
+	}
+	else
+	{
+		shipsA[shipA].hitPoints -= damage;
+		cout << "Enemy " << shipsE[shipE].shipName << " did " << damage << " damage to Ally " << shipsA[shipA].shipName << endl;
+		cout << "Ally " << shipsA[shipA].shipName << " now has " << shipsA[shipA].hitPoints << " hit points!" << endl;
+	}
 	return;
 }
 //Ally Moves
@@ -176,9 +204,20 @@ void attackShipA(Ship shipsA[], Ship shipsE[], int chooseShipA, int chooseShipE)
 {
 	srand(time(nullptr));
 	int damage = rand() % 15 + 1;//can change so it may miss
-	shipsE[chooseShipE].hitPoints -= damage;
-	cout << "Ally " << shipsA[chooseShipA].shipName << " did " << damage << " damage to enemy " << shipsE[chooseShipE].shipName << endl;
-	cout << "Enemy " << shipsE[chooseShipE].shipName << " now has " << shipsE[chooseShipE].hitPoints << " hit points!" << endl;
+	if (shipsA[chooseShipA].hitPoints <= 0)//checks to see if selected ship is destroied
+	{
+		cout << "Ally ship is destroied!" << endl;
+	}
+	else if (shipsE[chooseShipE].hitPoints <= 0)//checks to see if selected ship is destroied
+	{
+		cout << "Enemy ship is destroied!" << endl;
+	}
+	else
+	{
+		shipsE[chooseShipE].hitPoints -= damage;
+		cout << "Ally " << shipsA[chooseShipA].shipName << " did " << damage << " damage to enemy " << shipsE[chooseShipE].shipName << endl;
+		cout << "Enemy " << shipsE[chooseShipE].shipName << " now has " << shipsE[chooseShipE].hitPoints << " hit points!" << endl;
+	}
 	return;
 }
 void repairShip(Ship shipsA[], int shipA)//pick which ship to ship to repair, say how much is was repaired.
@@ -186,28 +225,44 @@ void repairShip(Ship shipsA[], int shipA)//pick which ship to ship to repair, sa
 	cout << "Repair was selected!" << endl;
 	srand(time(nullptr));
 	int repair = rand() % 10 + 1;
-	shipsA[shipA].hitPoints += repair;
-	cout << "Ally " << shipsA[shipA].shipName << " was repaired with " << repair << " hit points." << endl;
-	cout << "Ally " << shipsA[shipA].shipName << " now has " << shipsA[shipA].hitPoints << " hit points!\n";
+	if (shipsA[shipA].hitPoints <= 0)//checks to see if selected ship is destroied
+	{
+		cout << "Ally " << shipsA[shipA].shipName << " is destroied! Can not be repaired." << endl;
+	}
+	else
+	{
+		shipsA[shipA].hitPoints += repair;
+		cout << "Ally " << shipsA[shipA].shipName << " was repaired with " << repair << " hit points." << endl;
+		cout << "Ally " << shipsA[shipA].shipName << " now has " << shipsA[shipA].hitPoints << " hit points!\n";
+	}
 	return;
 }
-void checkCounters(Ship shipsA[], Ship shipsE[], int countA, int countE)
+void checkCounters(Ship shipsA[], Ship shipsE[], int counterA, int counterE)//checks for who wins/loses
 {
 	for (int i = 0; i < 3; i++)
 	{
 		if (shipsA[i].hitPoints <= 0)
 		{
-			countA -= 1;
+			counterA -= 1;
+			if (counterA <= 0)
+			{
+				cout << "You lost. Game Over" << endl;
+				return;
+			}
 		}
 	}
 	for (int i = 0; i < 3; i++)
 	{
 		if (shipsE[i].hitPoints <= 0)
 		{
-			countE -= 1;
+			counterE -= 1;
+			if (counterE <= 0)
+			{
+				cout << "Great Job! You have defeated the enemy!" << endl;
+				return;
+			}
 		}
 	}
-	cout << "You have " << countA << " ships left.\n";
-	cout << "Emeny has " << countE << " ships left.\n";
+	cout << "You have " << counterA << " ships left." << " Emeny has " << counterE << " ships left." << endl;
 	return;
 }
