@@ -33,40 +33,40 @@ int main()
 	Ship shipsE[3] = { { 15, "Main Commander", "Enemy" }, { 10, "Gun Ship", "Ememy" }, { 20, "Tanker", "Ememy" } };
 
 	string name;
-	char yon = 'N';
+	string yon = "No";
 	cout << "Name? ";
 	cin >> name;
 	cout << "Hello, " << name << "! Welcome aboard!" << endl;
 	cout << "You're incharge of 3 ships which are in a fight with 3 enemy ships.";//quick lore drop
 	do {
 		cout << "You will take turns to make actions and who ever destroies the other's ships first, Wins!" << endl;//how game works
-		cout << "Understood? Y / N ";
+		cout << "Understood? Yes / No ";
 		cin >> yon;
-		if (yon == 'Y')
+		if (yon == "Yes")
 		{
 			cout << "Great! Let's begin!" << endl;
 			break;
 		}
-		else if (yon != 'N')
+		else if (yon != "No")
 		{
-			cout << "Invalid input. Y / N" << endl;
-			yon = 'N';
+			cout << "Invalid input." << endl;
+			yon = "No";
 		}
-	} while (yon == 'N');
+	} while (yon == "No");
 
+	int r = 1;
 	do {
-		int i = 1;
-		cout << "======== Round " << i++ << " ========" << endl;
+		cout << "========== Round " << r++ << " ==========" << endl;
 		printShips(shipsA, shipsE, countA, countE);
 		emenyTurn(shipsA, shipsE);
 		yourTurn(shipsA, shipsE);
 		checkCounters(shipsA, shipsE, countA, countE);
-	} while (countE > 0 || countA > 0);
-	if (countE == 0)
+	} while (countE > 0 && countA > 0);
+	if (countE <= 0)
 	{
 		cout << "Great Job! You have defeated the enemy!" << endl;
 	}
-	else if (countA == 0)
+	else if (countA <= 0)
 	{
 		cout << "You lost. Game Over" << endl;
 	}
@@ -92,72 +92,72 @@ void printShips(Ship shipsA[], Ship shipsE[], int countA, int countE)//Prints al
 void yourTurn(Ship shipsA[], Ship shipsE[])//Attack or Repair
 {
 	int chooseShipA = 3;
-	cout << "Which ship do you want to use? 0, 1, or 2." << endl;
-	do {
-		cin >> chooseShipA;
-		cin.ignore();
-		switch (chooseShipA) {
-		case 0 :
-			cout << shipsA[0].shipName << " was selected!" << endl;
-			break;
-		case 1:
-			cout << shipsA[1].shipName << " was selected!" << endl;
-			break;
-		case 2:
-			cout << shipsA[2].shipName << " was selected!" << endl;
-			break;
-		default :
-			cout << "Invalid input. 0, 1, or 2" << endl;
-		}
-	} while (chooseShipA >= 3 || chooseShipA <= -1);
-	
-	char action;
-	int chooseShipE = 3;
-	cout << "What would you like to do: Attack(a) or Repair(r)" << endl;
-	do {
-		cin >> action;
-		cin.ignore();
-		switch (action) {
-		case 'a':
-			cout << "Attack was selected!" << endl;
+		cout << "Which ship do you want to use? 0, 1, or 2." << endl;
+		do {
+			cin >> chooseShipA;
+			cin.ignore();
+			switch (chooseShipA) {
+			case 0:
+				cout << shipsA[0].shipName << " was selected!" << endl;
+				break;
+			case 1:
+				cout << shipsA[1].shipName << " was selected!" << endl;
+				break;
+			case 2:
+				cout << shipsA[2].shipName << " was selected!" << endl;
+				break;
+			default:
+				cout << "Invalid input. 0, 1, or 2" << endl;
+			}
+		} while (chooseShipA >= 3 || chooseShipA <= -1);
 
-			cout << "Which ship do you want to Attack? 0, 1, or 2." << endl;
-			do {
-				cin >> chooseShipE;
-				cin.ignore();
-				switch (chooseShipE) {
-				case 0:
-					cout << shipsE[0].shipName << " was selected!" << endl;
-					break;
-				case 1:
-					cout << shipsE[1].shipName << " was selected!" << endl;
-					break;
-				case 2:
-					cout << shipsE[2].shipName << " was selected!" << endl;
-					break;
-				default:
-					cout << "Invalid input. 0, 1, or 2" << endl;
-				}
-			} while (chooseShipE >= 3 || chooseShipE <= -1);
+		int action = 0;
+		int chooseShipE = 3;
+		cout << "What would you like to do: Attack(1) or Repair(2)" << endl;
+		do {
+			cin >> action;
+			cin.ignore();
+			switch (action) {
+			case 1:
+				cout << "Attack was selected!" << endl;
 
-			attackShipA(shipsA, shipsE, chooseShipA, chooseShipE);
-			break;
-		case 'r':
-			cout << "Repair was selected!" << endl;
-			repairShip(shipsA, chooseShipA);
-			break;
-		default:
-			cout << "Invalid input. Attack(a) or Repair(r)" << endl;
-		}
-	} while (action != 'a' || action != 'r');
+				cout << "Which ship do you want to Attack? 0, 1, or 2." << endl;
+				do {
+					cin >> chooseShipE;
+					cin.ignore();
+					switch (chooseShipE) {
+					case 0:
+						cout << shipsE[0].shipName << " was selected!" << endl;
+						break;
+					case 1:
+						cout << shipsE[1].shipName << " was selected!" << endl;
+						break;
+					case 2:
+						cout << shipsE[2].shipName << " was selected!" << endl;
+						break;
+					default:
+						cout << "Invalid input. 0, 1, or 2" << endl;
+					}
+				} while (chooseShipE >= 3 || chooseShipE <= -1);
+
+				attackShipA(shipsA, shipsE, chooseShipA, chooseShipE);
+				break;
+			case 2:
+				repairShip(shipsA, chooseShipA);
+				break;
+			default:
+				cout << "Invalid input. Attack(a) or Repair(r)" << endl;
+				action = 0;
+			}
+		} while (action == 0);
 	return;
 }
 //Enemy Moves
 void emenyTurn(Ship shipsA[], Ship shipsE[])//Enemy only attacks
 {
 	srand(time(nullptr));
-	int randomPickA = rand() % 2;//random Enemy attacks
-	int randomPickE = rand() % 2;//random Ally
+	int randomPickA = rand() % 2;//random Ally is attacked
+	int randomPickE = rand() % 2;//random Enemy
 	cout << "Ally " << shipsA[randomPickA].shipName << " is being attacked by Enemy " << shipsE[randomPickE].shipName << endl;
 	attackShipE(shipsA, shipsE, randomPickA, randomPickE);
 	return;
@@ -183,6 +183,7 @@ void attackShipA(Ship shipsA[], Ship shipsE[], int chooseShipA, int chooseShipE)
 }
 void repairShip(Ship shipsA[], int shipA)//pick which ship to ship to repair, say how much is was repaired.
 {
+	cout << "Repair was selected!" << endl;
 	srand(time(nullptr));
 	int repair = rand() % 10 + 1;
 	shipsA[shipA].hitPoints += repair;
@@ -192,19 +193,21 @@ void repairShip(Ship shipsA[], int shipA)//pick which ship to ship to repair, sa
 }
 void checkCounters(Ship shipsA[], Ship shipsE[], int countA, int countE)
 {
-	for (int i = 0; i < countA; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		if (shipsA[i].hitPoints = 0)
+		if (shipsA[i].hitPoints <= 0)
 		{
 			countA -= 1;
 		}
 	}
-	for (int i = 0; i < countE; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		if (shipsE[i].hitPoints = 0)
+		if (shipsE[i].hitPoints <= 0)
 		{
 			countE -= 1;
 		}
 	}
+	cout << "You have " << countA << " ships left.\n";
+	cout << "Emeny has " << countE << " ships left.\n";
 	return;
 }
