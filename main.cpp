@@ -85,7 +85,7 @@ int main()
 		}
 		else if (counterE <= 0)
 		{
-			cout << "Great Job! You have defeated the enemy!" << endl;
+			cout << "Great Job " << name << "! You have defeated the enemy!" << endl;
 			break;
 		}
 		else
